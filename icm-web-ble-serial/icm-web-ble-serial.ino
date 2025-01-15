@@ -85,7 +85,7 @@ int pacnum = 0;
 #define BATT_ADC_PIN 35
 #define VBUS_PIN 36
 #define TP_PWR_PIN 25
-#define LED_PIN 4
+#define LED_PIN 3
 #define CHARGE_PIN 32
 
 #define BLE_NAME "Mesquite"  // must match filters name in bluetoothterminal.js- navigator.bluetooth.requestDevice
@@ -180,6 +180,8 @@ void setup() {
 
   pinMode(LED_PIN, OUTPUT);
 
+  pinMode(3, OUTPUT);
+  digitalWrite(3, HIGH);
 
   BLEDevice::init(BLE_NAME);
   BLEServer *pServer = BLEDevice::createServer();
@@ -400,6 +402,12 @@ void TaskBluetooth(void *pvParameters) {
       String url = mac_address + " " + String(quat.x, 4) + " " + String(quat.y, 4) + " " + String(quat.z, 4) + " " + String(quat.w, 4) + " " + String(count++) + " " + String(batt_v);
       pCharacteristic->setValue(url.c_str());
       pCharacteristic->notify();
+      if(count%2 == 0){
+          digitalWrite(3, HIGH);
+      }
+      else{
+          digitalWrite(3, LOW);
+      }
     }
     vTaskDelay(1);
   }
