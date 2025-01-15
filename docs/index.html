@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Quatro</title>
+    <title>Mesquite Pod</title>
     <style>
         body {
             margin: 0;
@@ -21,7 +21,7 @@
 </head>
 
 <body>
-    <button style="position: fixed; z-index: 100;" class="btn waves-effect waves-light blue" id="blebtn">Connect a Quatro
+    <button style="position: fixed; z-index: 100;" class="btn waves-effect waves-light blue" id="blebtn">Connect a Pod
         <i class="material-icons left large">bluetooth</i> </button>
     <button style="position: fixed; z-index: 100; right: 0px;" class="btn waves-effect waves-light green" onclick="calibrate()">calibrate
         <i class="material-icons left large">settings</i> </button>
@@ -51,9 +51,9 @@
 
         var refQInverse = new THREE.Quaternion().copy(calibQ).invert();
         var transformedQ = new THREE.Quaternion().multiplyQuaternions(refQInverse, currQ);
-        //theModel.quaternion.copy(new THREE.Quaternion(transformedQ.x, -transformedQ.z, transformedQ.y, transformedQ.w));
-        pivot.quaternion.copy(new THREE.Quaternion(transformedQ.x, -transformedQ.z, transformedQ.y, transformedQ.w));
 
+        pivot.quaternion.copy(new THREE.Quaternion(-transformedQ.y, transformedQ.z, -transformedQ.x, transformedQ.w));
+       
         renderer.render(scene, camera);
     }
 </script>
@@ -114,10 +114,10 @@
 
         // axis helper
         const axesHelper = new THREE.AxesHelper(50);
-        scene.add(axesHelper);
+       // scene.add(axesHelper);
 
         // move axis to center of the model
-        axesHelper.position.set(0, 4, 0);
+       // axesHelper.position.set(0, 4, 0);
 
         //  grid floor
         const grid = new THREE.GridHelper(100, 100, 0x000000, 0x000000);
