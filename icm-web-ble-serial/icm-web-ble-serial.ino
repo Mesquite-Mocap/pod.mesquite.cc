@@ -88,7 +88,7 @@ int pacnum = 0;
 #define LED_PIN 4
 #define CHARGE_PIN 32
 
-#define BLE_NAME "Quatro"  // must match filters name in bluetoothterminal.js- navigator.bluetooth.requestDevice
+#define BLE_NAME "Mesquite"  // must match filters name in bluetoothterminal.js- navigator.bluetooth.requestDevice
 
 BLEUUID SERVICE_UUID("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");  // UART service UUID
 BLEUUID CHARACTERISTIC_UUID("6E400002-B5A3-F393-E0A9-E50E24DCCA9E");
@@ -111,7 +111,7 @@ void setupWiFi() {
   wifiManager.setBreakAfterConfig(true);  // Without this saveConfigCallback does not get fired
   mac_address = WiFi.macAddress();
   Serial.println(mac_address);
-  wifiManager.autoConnect(String("Quatro-" + mac_address).c_str());
+  wifiManager.autoConnect(String("Mesquite-" + mac_address).c_str());
 }
 
 void configModeCallback(WiFiManager *myWiFiManager) {
@@ -122,48 +122,6 @@ void configModeCallback(WiFiManager *myWiFiManager) {
 }
 
 void drawProgressBar(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint8_t percentage, uint16_t frameColor, uint16_t barColor) {
-}
-
-void setupOTA() {
-
-  // Hostname defaults to esp3232-[MAC]
-  ArduinoOTA.setHostname(mac_address.c_str());
-
-  ArduinoOTA.onStart([]() {
-              String type;
-              if (ArduinoOTA.getCommand() == U_FLASH)
-                type = "sketch";
-              else  // U_SPIFFS
-                type = "filesystem";
-
-              // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
-              Serial.println("Start updating " + type);
-              otaStart = true;
-            })
-    .onEnd([]() {
-      Serial.println("\nEnd");
-      delay(500);
-    })
-    .onProgress([](unsigned int progress, unsigned int total) {
-      // Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
-      int percentage = (progress / (total / 100));
-    })
-    .onError([](ota_error_t error) {
-      Serial.printf("Error[%u]: ", error);
-      if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
-      else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
-      else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
-      else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
-      else if (error == OTA_END_ERROR) Serial.println("End Failed");
-
-      delay(3000);
-      otaStart = false;
-      initial = 1;
-      targetTime = millis() + 1000;
-      omm = 99;
-    });
-
-  ArduinoOTA.begin();
 }
 
 String getVoltage() {
@@ -222,18 +180,6 @@ void setup() {
 
   pinMode(LED_PIN, OUTPUT);
 
-  int otaState = EEPROM.read(0);
-  Serial.println(otaState);
-
-  if (otaState == 1) {
-    EEPROM.write(0, 0);
-    EEPROM.commit();
-    otaMode = true;
-    otaStart = true;
-    setupWiFi();
-    setupOTA();
-    return;
-  }
 
   BLEDevice::init(BLE_NAME);
   BLEServer *pServer = BLEDevice::createServer();
@@ -251,8 +197,8 @@ void setup() {
 
   mac_address = BLEDevice::getAddress().toString().c_str();
 
-  esp_ble_gap_set_device_name(("Quatro-" + mac_address).c_str());
-  esp_bt_dev_set_device_name(("Quatro-" + mac_address).c_str());
+  esp_ble_gap_set_device_name(("Mesquite-" + mac_address).c_str());
+  esp_bt_dev_set_device_name(("Mesquite-" + mac_address).c_str());
 
   pService->start();
 
